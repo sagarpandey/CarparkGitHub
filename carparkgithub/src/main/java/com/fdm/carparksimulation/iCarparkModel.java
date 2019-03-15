@@ -37,4 +37,6 @@ public interface iCarparkModel {
 	
 	 public void setTotalTruckNumber(int totalTruckNumber);
 
+	public int getTotalTruckNumber();
+
 }

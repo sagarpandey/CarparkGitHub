@@ -16,7 +16,8 @@ public class CarparkController {
 
 		carparkView.println("How many spaces does the carpark have?");
 
-		int totalSpaces = carparkView.nextInt();
+		String totalSpacesString = carparkView.nextLine();
+		int totalSpaces = Integer.parseInt(totalSpacesString);
 
 		carparkModel.setTotalSpace(totalSpaces);
 
@@ -43,7 +44,6 @@ public class CarparkController {
 					} else {
 						carparkView.println("The car park is full");
 					}
-
 					break;
 
 				case "ENTER TRUCK":
@@ -56,74 +56,69 @@ public class CarparkController {
 					}
 					break;
 
-				case "EXIT CAR":
-					if (carparkModel.getCarNumber() > 0) {
-						exitCar(carparkModel, carparkView);
-					} else {
-						carparkView.println("There is no car to exit");
-
-					}
-					break;
-
-				case "EXIT TRUCK":
-
-					if (carparkModel.getTruckNumber() > 0) {
-						exitTruck(carparkModel, carparkView);
-					} else {
-						carparkView.println("There is no truck to exit");
-
-					}
-					break;
 
 				case "REPORT":
 					generateReport(carparkModel);
+					break;
 
 				case "QUIT":
 					run = false;
 
 					break;
 				default:
-					carparkView.println("Wrong Command");
-					break;
+					if (userInput.toUpperCase().matches("EXIT CAR [0-9]+")) {
+						String[] data = userInput.split(" ");
+						if (carparkModel.getCarNumber() > 0) {
+							exitCar(carparkModel, carparkView, Integer.parseInt(data[2]));
+						} else {
+							carparkView.println("The car park is full");
+						}
 
+					} else if (userInput.toUpperCase().matches("EXIT TRUCK [0-9]+")) {
+						String[] data = userInput.split(" ");
+						if (carparkModel.getTruckNumber() > 0) {
+							exitTruck(carparkModel, carparkView, Integer.parseInt(data[2]));
+						} else {
+							carparkView.println("There is no truck to exit");
+
+						}
+
+						break;
+
+					}
 				}
+
 			}
-
 		}
-
 	}
 
-	private void exitTruck(CarparkModel carParkSimulation, CarparkView carparkView) {
+	private void exitTruck(iCarparkModel carParkSimulation, iCarparkView carparkView, int numberOfHours) {
 		carParkSimulation.setTruckNumber(carParkSimulation.getTruckNumber() - 1);
-		carParkSimulation.setUsedSpace(carParkSimulation.getUsedSpace() - 1);
+		carParkSimulation.setUsedSpace(carParkSimulation.getUsedSpace() - 2);
 		carParkSimulation.setTruckExit(carParkSimulation.getTruckExit() + 1);
-		carparkView.println("Total Number of hours parked?");
-		int timeInHours = carparkView.nextInt();
-		carParkSimulation.setTotalAmount(carParkSimulation.getTotalAmount() + (timeInHours * 3));
+		carParkSimulation.setTotalAmount(carParkSimulation.getTotalAmount() + (numberOfHours * 3));
 	}
 
-	private void exitCar(CarparkModel carParkSimulation, CarparkView carparkView) {
+	private void exitCar(iCarparkModel carParkSimulation, iCarparkView carparkView, int numberOfHours) {
 		carParkSimulation.setCarNumber(carParkSimulation.getCarNumber() - 1);
 		carParkSimulation.setUsedSpace(carParkSimulation.getUsedSpace() - 1);
 		carParkSimulation.setCarExit(carParkSimulation.getCarExit() + 1);
-		carparkView.println("Total Number of hours parked?");
-		int timeInHours = carparkView.nextInt();
-		carParkSimulation.setTotalAmount(carParkSimulation.getTotalAmount() + (timeInHours * 2));
+		carParkSimulation.setTotalAmount(carParkSimulation.getTotalAmount() + (numberOfHours * 2));
 	}
 
-	private void enterCar(CarparkModel carParkSimulation) {
+	private void enterCar(iCarparkModel carParkSimulation) {
 		carParkSimulation.setCarNumber(carParkSimulation.getCarNumber() + 1);
 		carParkSimulation.setUsedSpace(carParkSimulation.getUsedSpace() + 1);
 		carParkSimulation.setTotalCarNumber(carParkSimulation.getTotalCarNumber() + 1);
 	}
 
-	private void enterTruck(CarparkModel carParkSimulation) {
-		carParkSimulation.setTruckNumber(carParkSimulation.getTruckNumber() + 1);
-		carParkSimulation.setUsedSpace(carParkSimulation.getUsedSpace() + 2);
-		carParkSimulation.setTotalTruckNumber(carParkSimulation.getTotalTruckNumber() + 1);
+	private void enterTruck(iCarparkModel carparkModel2) {
+		carparkModel2.setTruckNumber(carparkModel2.getTruckNumber() + 1);
+		carparkModel2.setUsedSpace(carparkModel2.getUsedSpace() + 2);
+		carparkModel2.setTotalTruckNumber(carparkModel2.getTotalTruckNumber() + 1);
 	}
 
-	private void generateReport(CarparkModel carParkSimulation) {
+	private void generateReport(iCarparkModel carParkSimulation) {
 		carparkView.println("Report: \n" + "Cars Entered: " + carParkSimulation.getTotalCarNumber()
 				+ "\n Trucks Entered: " + carParkSimulation.getTotalTruckNumber() + "\n Cars Exited: "
 				+ carParkSimulation.getCarExit() + "\n Trucks Exited: " + carParkSimulation.getTruckExit()
